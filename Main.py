@@ -25,25 +25,34 @@ DOCS = [
 ]
 STOPWORDS_FILE = '/media/zsasz/Ali1/study/2021/ri/tpri/docs/stopwords_fr.txt'
 STOPWORDS_ENCODING = 'utf-8'
+INCLUDE_IDF = True
+IDF_METHOD = SearchEngine.IDF_METHOD_DIV # SearchEngine.IDF_METHOD_DIV | SearchEngine.IDF_METHOD_LOG
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-# loading the documents
-data = FileLoader.readFiles(filesNames=DOCS, encoding=DOCS_ENCODING)
-# loading stop words
-stopWords = FileLoader.loadStopWords(STOPWORDS_FILE, encoding=STOPWORDS_ENCODING)
-# indexing documents
-indexes = Indexer.indexDocs(data, stopWords)
-# merging indexes
-mergedIndexes = Indexer.mergedIndexes(indexes)
-# initialize the search engine
-SearchEngine.init(index=mergedIndexes, corpus=DOCS)
-# execute a search query
-searchResult = SearchEngine.lookUpFor('hommes', minOccurrences=2)
-wordIDF = SearchEngine.IDF(term='hommes', fraction=False)
-# DEBUG
-print("Word seen in the following documents:")
-print('\n - '.join(list(searchResult.keys())[:5]))
-print('Word IDF: ', wordIDF)
 
-# TODO: calculate TF*IDF
-# TODO: save index
+# initialize the search engine
+# SearchEngine.init(
+#     corpus=DOCS, 
+#     stopwords=STOPWORDS_FILE, 
+#     docs_encoding=DOCS_ENCODING, 
+#     stopwords_encoding=STOPWORDS_ENCODING
+#     )
+
+# load an existing model
+# SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)
+
+# execute a search query
+# searchResult = SearchEngine.Search(
+#     term='hommes',
+#     minOccurrences=2, 
+#     maxItems=2,
+#     showStat=True,
+#     includeIDF=INCLUDE_IDF, 
+#     methodIDF=IDF_METHOD
+#     )
+
+# wordIDF = SearchEngine.IDF(term='hommes', fraction=False)
+# print('Word IDF: ', wordIDF)
+
+# save index
+#SearchEngine.save('engineWithData.json', saveData=True)
