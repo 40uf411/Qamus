@@ -1,10 +1,12 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
 import math
 import time
 import json
 
-from FilesLoader import FileLoader
-from Tokenizer import Tokenizer
-from Indexer import Indexer
+from .FilesLoader import FileLoader
+from .Tokenizer import Tokenizer
+from .Indexer import Indexer
 
 class SearchEngine:
     IDF_METHOD_DIV = 0
@@ -14,13 +16,24 @@ class SearchEngine:
     __init = False
     
     @staticmethod
-    def init(corpus, stopwords, docs_encoding='utf-8', stopwords_encoding='utf-8'):
-        # save the corpus
-        SearchEngine.__corpus = corpus 
-        # loading the documents
-        SearchEngine.__data = FileLoader.readFiles(filesNames=corpus, encoding=docs_encoding)
-        # loading stop words
-        SearchEngine.__stopWords = FileLoader.loadStopWords(fileName=stopwords, encoding=stopwords_encoding)
+    def init(corpusFiles='', stopwordsFile='', dataset={}, stopwords=[], docs_encoding='utf-8', stopwords_encoding='utf-8'):
+        if corpusFiles != '':
+            # save the corpus
+            SearchEngine.__corpus = corpusFiles 
+            # loading the documents
+            SearchEngine.__data = FileLoader.readFiles(filesNames=corpusFiles, encoding=docs_encoding)
+        else:
+            # save the corpus
+            SearchEngine.__corpus = list(dataset.keys())
+            # loading the documents
+            SearchEngine.__data = dataset
+        
+        if stopwordsFile != '':
+            # loading stop words
+            SearchEngine.__stopWords = FileLoader.loadStopWords(fileName=stopwordsFile, encoding=stopwords_encoding)
+        else:
+            # loading stop words
+            SearchEngine.__stopWords = stopwords
         # indexing documents
         SearchEngine.__indexes = Indexer.indexDocs(docs=SearchEngine.__data, stopWords=SearchEngine.__stopWords)
         # merging indexes
@@ -29,6 +42,21 @@ class SearchEngine:
         SearchEngine.__data = dict(SearchEngine.__data)
         # initiation is done!
         SearchEngine.__init = True
+    @staticmethod
+    def corpus():
+        return SearchEngine.__corpus
+    
+    @staticmethod
+    def uniqueTerms():
+        return list(SearchEngine.__mergedIndexes.keys())
+    
+    @staticmethod
+    def docTerms(id):
+        return SearchEngine.__indexes[id] if id in SearchEngine.__indexes.keys() else dict()
+    
+    @staticmethod
+    def termFeq(id):
+        return SearchEngine.__mergedIndexes[id] if id in SearchEngine.__mergedIndexes.keys() else dict()
     
     @staticmethod
     def idfFunction(numberOfDocs, method=IDF_METHOD_DIV):
@@ -117,4 +145,3 @@ class SearchEngine:
             SearchEngine.__data = dict(SearchEngine.__data)
         # initiation is done!
         SearchEngine.__init = True
-            

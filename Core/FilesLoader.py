@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
 class FileLoader:
     @staticmethod
     def readFile(fileName, encoding="utf-8"):

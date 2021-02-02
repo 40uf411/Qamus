@@ -1,11 +1,11 @@
+#!/usr/bin/python
+# -*- coding=utf-8 -*-
 import os
 import re
 import string
 from collections import Counter
 
-
 class Tokenizer:
-
     @staticmethod
     def tokenize(text, stopWords):
         text = text.lower()
