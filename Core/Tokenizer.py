@@ -29,5 +29,5 @@ class Tokenizer:
     def defineVocabulary(tokens):
         vocab = Counter()
         vocab.update(tokens)
-        print('> Vocabulary size: %d\n' % len(vocab))
+        # print('> Vocabulary size: %d\n' % len(vocab))
         return vocab

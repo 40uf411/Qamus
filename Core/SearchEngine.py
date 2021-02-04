@@ -7,6 +7,10 @@ import json
 from .FilesLoader import FileLoader
 from .Tokenizer import Tokenizer
 from .Indexer import Indexer
+import sys
+sys.path.append("..")
+from Models.Boolean import BooleanModule
+from Requests.Boolean import BooleanRequest
 
 class SearchEngine:
     IDF_METHOD_DIV = 0
@@ -37,7 +41,9 @@ class SearchEngine:
         # indexing documents
         SearchEngine.__indexes = Indexer.indexDocs(docs=SearchEngine.__data, stopWords=SearchEngine.__stopWords)
         # merging indexes
-        SearchEngine.__mergedIndexes = Indexer.mergedIndexes(SearchEngine.__indexes)
+        SearchEngine.__mergedIndexes = Indexer.mergedIndexes(SearchEngine.__indexes['freq'])
+        # weight the indexes
+        SearchEngine.__mergedIndexes = Indexer.weightIndexes(SearchEngine.__mergedIndexes, SearchEngine.__indexes['length'])
         # covert data into a list
         SearchEngine.__data = dict(SearchEngine.__data)
         # initiation is done!
@@ -45,19 +51,59 @@ class SearchEngine:
     @staticmethod
     def corpus():
         return SearchEngine.__corpus
-    
+
     @staticmethod
     def uniqueTerms():
         return list(SearchEngine.__mergedIndexes.keys())
-    
+
     @staticmethod
     def docTerms(id):
         return SearchEngine.__indexes[id] if id in SearchEngine.__indexes.keys() else dict()
-    
+
+    @staticmethod
+    def docIndexes():
+        return SearchEngine.__indexes
+
     @staticmethod
     def termFeq(id):
         return SearchEngine.__mergedIndexes[id] if id in SearchEngine.__mergedIndexes.keys() else dict()
-    
+
+    @staticmethod
+    def search(request, model):
+        if model.lower() == 'boolean':
+            return BooleanModule.search(
+                request=BooleanRequest(request),
+                indexes=SearchEngine.__indexes['freq']
+            )
+
+    @staticmethod
+    def save(fileName, saveData=False):
+        data = dict()
+        data['corpus'] = SearchEngine.__corpus
+        data['index'] = SearchEngine.__mergedIndexes
+        if saveData:
+            data['data'] = SearchEngine.__data
+        with open(fileName, 'w') as fp:
+            json.dump(data, fp)
+
+    @staticmethod
+    def load(fileName, encoding='utf-8'):
+        with open(fileName,) as fp:
+            data = json.load(fp) 
+        SearchEngine.__corpus = data['corpus']
+        SearchEngine.__mergedIndexes = data['index']
+        if 'data' in data.keys():
+            SearchEngine.__data = data['data']
+        else:
+            # loading the documents
+            SearchEngine.__data = FileLoader.readFiles(filesNames=SearchEngine.__corpus, encoding=encoding)
+            # covert data into a list
+            SearchEngine.__data = dict(SearchEngine.__data)
+        # initiation is done!
+        SearchEngine.__init = True
+
+    # %% 
+    # ? will be removed or used somewhere else
     @staticmethod
     def idfFunction(numberOfDocs, method=IDF_METHOD_DIV):
         if method == SearchEngine.IDF_METHOD_DIV:
@@ -119,29 +165,3 @@ class SearchEngine:
             print()
             print()
             c += 1
-
-    @staticmethod
-    def save(fileName, saveData=False):
-        data = dict()
-        data['corpus'] = SearchEngine.__corpus
-        data['index'] = SearchEngine.__mergedIndexes
-        if saveData:
-            data['data'] = SearchEngine.__data
-        with open(fileName, 'w') as fp:
-            json.dump(data, fp)
-            
-    @staticmethod
-    def load(fileName, encoding='utf-8'):
-        with open(fileName,) as fp:
-            data = json.load(fp) 
-        SearchEngine.__corpus = data['corpus']
-        SearchEngine.__mergedIndexes = data['index']
-        if 'data' in data.keys():
-            SearchEngine.__data = data['data']
-        else:
-            # loading the documents
-            SearchEngine.__data = FileLoader.readFiles(filesNames=SearchEngine.__corpus, encoding=encoding)
-            # covert data into a list
-            SearchEngine.__data = dict(SearchEngine.__data)
-        # initiation is done!
-        SearchEngine.__init = True

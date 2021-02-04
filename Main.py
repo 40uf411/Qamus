@@ -49,12 +49,18 @@ corpus = Loader.corpus('T', 'W', 'A')
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
+
 SearchEngine.init(
     dataset=corpus, 
     stopwords=stopwords.words('english')
     )
-index = SearchEngine.docTerms(70)
+
+index = SearchEngine.docIndexes()
 term = SearchEngine.termFeq('computer')
+
+# ? testing the boolean request
+result = SearchEngine.search('algebraic and set', model='boolean')
+
 print()
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)
