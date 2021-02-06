@@ -59,8 +59,14 @@ index = SearchEngine.docIndexes()
 term = SearchEngine.termFeq('computer')
 
 # ? testing the boolean request
-result = SearchEngine.search('algebraic and set', model='boolean')
+#result = SearchEngine.search('algebraic and set', model=SearchEngine.BOOLEAN_MODEL)
 
+m = SearchEngine.search(
+    request='set', 
+    model=SearchEngine.VECTOR_MODEL, 
+    options = {
+        'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY
+    })
 print()
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)

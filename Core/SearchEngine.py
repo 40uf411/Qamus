@@ -11,14 +11,24 @@ import sys
 sys.path.append("..")
 from Models.Boolean import BooleanModule
 from Requests.Boolean import BooleanRequest
+from Models.Vector import VectorModule
+from Requests.Vector import VectorRequest
 
 class SearchEngine:
+    BOOLEAN_MODEL = 0
+    VECTOR_MODEL = 1
+
+    INNER_PRODUCT_SIMILARITY = VectorModule.INNER_PRODUCT_SIMILARITY
+    DICE_COEFFICIENT_SIMILARITY = VectorModule.DICE_COEFFICIENT_SIMILARITY
+    COSINUS_SIMILARITY = VectorModule.COSINUS_SIMILARITY
+    JACCARD_INDEX_SIMILARITY = VectorModule.JACCARD_INDEX_SIMILARITY
+
     IDF_METHOD_DIV = 0
     IDF_METHOD_LOG = 1
-    
+
     index = None
     __init = False
-    
+
     @staticmethod
     def init(corpusFiles='', stopwordsFile='', dataset={}, stopwords=[], docs_encoding='utf-8', stopwords_encoding='utf-8'):
         if corpusFiles != '':
@@ -48,6 +58,7 @@ class SearchEngine:
         SearchEngine.__data = dict(SearchEngine.__data)
         # initiation is done!
         SearchEngine.__init = True
+
     @staticmethod
     def corpus():
         return SearchEngine.__corpus
@@ -69,12 +80,18 @@ class SearchEngine:
         return SearchEngine.__mergedIndexes[id] if id in SearchEngine.__mergedIndexes.keys() else dict()
 
     @staticmethod
-    def search(request, model):
-        if model.lower() == 'boolean':
+    def search(request, model=0, options={}):
+        if model == SearchEngine.BOOLEAN_MODEL:
             return BooleanModule.search(
                 request=BooleanRequest(request),
                 indexes=SearchEngine.__indexes['freq']
             )
+        elif model == SearchEngine.VECTOR_MODEL:
+             return VectorModule.search(
+                 request=VectorRequest(request, SearchEngine.__stopWords),
+                 index=SearchEngine.__mergedIndexes, 
+                 options=options
+             ) 
 
     @staticmethod
     def save(fileName, saveData=False):
