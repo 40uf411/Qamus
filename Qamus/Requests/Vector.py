@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
-import sys
-sys.path.append("..")
-from Core.Tokenizer import Tokenizer
+
+from ..Core.Tokenizer import Tokenizer
 
 class VectorRequest():
     

@@ -1,7 +1,7 @@
-from Core.FilesLoader import FileLoader
-from Core.Tokenizer import Tokenizer
-from Core.Indexer import Indexer
-from Core.SearchEngine import SearchEngine
+from Qamus.Core.FilesLoader import FileLoader
+from Qamus.Core.Tokenizer import Tokenizer
+from Qamus.Core.Indexer import Indexer
+from Qamus.Core.SearchEngine import SearchEngine
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Config %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 DOCS_DIR = '/media/zsasz/Ali1/study/2021/ri/tpri/docs/'
@@ -29,7 +29,7 @@ INCLUDE_IDF = True
 IDF_METHOD = SearchEngine.IDF_METHOD_DIV # SearchEngine.IDF_METHOD_DIV | SearchEngine.IDF_METHOD_LOG
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Code %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-from Datasets.CACM.Api import Loader
+from Qamus.Datasets.CACM.Api import Loader
 data = Loader.loadData()
 corpus = Loader.corpus('T', 'W', 'A')
 
@@ -54,20 +54,20 @@ SearchEngine.init(
     dataset=corpus, 
     stopwords=stopwords.words('english')
     )
-
-index = SearchEngine.docIndexes()
-term = SearchEngine.termFeq('computer')
+print()
+# index = SearchEngine.docIndexes()
+# term = SearchEngine.termFeq('computer')
 
 # ? testing the boolean request
 #result = SearchEngine.search('algebraic and set', model=SearchEngine.BOOLEAN_MODEL)
 
-m = SearchEngine.search(
-    request='set', 
-    model=SearchEngine.VECTOR_MODEL, 
-    options = {
-        'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY
-    })
-print()
+# result = SearchEngine.search(
+#     request='set of algorithms or logical normal tests', 
+#     model=SearchEngine.VECTOR_MODEL, 
+#     options = {
+#         'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY
+#     })
+# print(list(result.items())[:3])
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)
 

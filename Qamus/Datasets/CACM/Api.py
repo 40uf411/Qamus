@@ -10,31 +10,31 @@ class Loader(Dataset):
 
     @staticmethod
     def loadData():
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        data = dict()
-        with open(dir_path + '/cacm.all', 'r') as file:
-            lines = file.readlines()
-        
-        id = ''
-        key = ''
-        for line in lines:
-            if line[0:2] == '.I':
-                id = int(line[3:].strip())
-                data[id] = dict()
-            elif line[0] == '.':
-                key = line[1:].strip()
-                data[id][key] = ''
-            else:
-                data[id][key] = data[id][key] + line
-                
-        Loader.init = True    
-        Loader.data = data    
-        return data
-    
+        if not Loader.init:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            data = dict()
+            with open(dir_path + '/cacm.all', 'r') as file:
+                lines = file.readlines()
+            
+            id = ''
+            key = ''
+            for line in lines:
+                if line[0:2] == '.I':
+                    id = int(line[3:].strip())
+                    data[id] = dict()
+                elif line[0] == '.':
+                    key = line[1:].strip()
+                    data[id][key] = ''
+                else:
+                    data[id][key] = data[id][key] + line
+            Loader.data = data 
+            Loader.init = True    
+        return Loader.data
+
     @staticmethod
     def doc(id):
         if not Loader.init:
-            Loader.loadData
+            Loader.loadData()
         
         data = Loader.data[id] if (id in Loader.data.keys()) else dict()
         return data
@@ -46,6 +46,7 @@ class Loader(Dataset):
     
     @staticmethod
     def corpus(*attrs):
+        Loader.loadData()
         allAttrs = True if (len(attrs) == 0) else False
         corpus = dict()
         

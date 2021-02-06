@@ -7,12 +7,11 @@ import json
 from .FilesLoader import FileLoader
 from .Tokenizer import Tokenizer
 from .Indexer import Indexer
-import sys
-sys.path.append("..")
-from Models.Boolean import BooleanModule
-from Requests.Boolean import BooleanRequest
-from Models.Vector import VectorModule
-from Requests.Vector import VectorRequest
+
+from ..Models.Boolean import BooleanModule
+from ..Requests.Boolean import BooleanRequest
+from ..Models.Vector import VectorModule
+from ..Requests.Vector import VectorRequest
 
 class SearchEngine:
     BOOLEAN_MODEL = 0
@@ -94,12 +93,12 @@ class SearchEngine:
              ) 
 
     @staticmethod
-    def save(fileName, saveData=False):
+    def save(fileName):
         data = dict()
-        data['corpus'] = SearchEngine.__corpus
-        data['index'] = SearchEngine.__mergedIndexes
-        if saveData:
-            data['data'] = SearchEngine.__data
+        data['data'] = SearchEngine.__data
+        data['indexes'] = SearchEngine.__indexes
+        data['mergedIndexes'] = SearchEngine.__mergedIndexes
+        data['stopwords'] = SearchEngine.__stopWords
         with open(fileName, 'w') as fp:
             json.dump(data, fp)
 
@@ -108,60 +107,17 @@ class SearchEngine:
         with open(fileName,) as fp:
             data = json.load(fp) 
         SearchEngine.__corpus = data['corpus']
-        SearchEngine.__mergedIndexes = data['index']
-        if 'data' in data.keys():
-            SearchEngine.__data = data['data']
-        else:
-            # loading the documents
-            SearchEngine.__data = FileLoader.readFiles(filesNames=SearchEngine.__corpus, encoding=encoding)
-            # covert data into a list
-            SearchEngine.__data = dict(SearchEngine.__data)
+        SearchEngine.__indexes = data['index']
+        SearchEngine.__mergedIndexes = data['mergedIndexes']
+        SearchEngine.__stopWords = data['stopwords']
         # initiation is done!
         SearchEngine.__init = True
 
     # %% 
     # ? will be removed or used somewhere else
-    @staticmethod
-    def idfFunction(numberOfDocs, method=IDF_METHOD_DIV):
-        if method == SearchEngine.IDF_METHOD_DIV:
-            return numberOfDocs / len(SearchEngine.__corpus)
-        elif method == SearchEngine.IDF_METHOD_LOG:
-            return math.log(1+numberOfDocs)
-        
-    @staticmethod
-    def lookUpFor(term, minOccurrences=1, includeIDF=True, methodIDF=IDF_METHOD_DIV):
-        # entry gates
-        if not SearchEngine.__init:
-            return False
-        if term not in SearchEngine.__mergedIndexes.keys():
-            return False
-        # getting the docs that has a minimum occurrences of the term
-        d = SearchEngine.__mergedIndexes[term]
-        data = dict()
-        for elem in SearchEngine.__mergedIndexes[term].keys():
-            if d[elem] >= minOccurrences:
-                data[elem] = d[elem]
-        if includeIDF:
-            numOfElements = len(list(data.keys()))
-            for elem in data.keys():
-                data[elem] = data[elem] * SearchEngine.idfFunction(numOfElements, methodIDF)
-                
-        sorted_dict = dict()
-        sorted_keys = sorted(data, key=data.get, reverse=True)
 
-        for w in sorted_keys:
-            sorted_dict[w] = data[w]
-        return sorted_dict
-        
     @staticmethod
-    def IDF(term, fraction=True):
-        if fraction:
-            return len(SearchEngine.lookUpFor(term))/len(SearchEngine.__corpus)
-        else:
-            return len(SearchEngine.lookUpFor(term))
-        
-    @staticmethod
-    def Search(term, maxItems=5, minOccurrences=1, showStat=False,includeIDF=True, methodIDF=IDF_METHOD_DIV):
+    def __OldPrintSearch(term, maxItems=5, minOccurrences=1, showStat=False,includeIDF=True, methodIDF=IDF_METHOD_DIV):
         print("Searching for the term '%s' in %d documents:"%(term, len(SearchEngine.__corpus)))
         start_time = time.time()
         data = SearchEngine.lookUpFor(term, minOccurrences, includeIDF, methodIDF)

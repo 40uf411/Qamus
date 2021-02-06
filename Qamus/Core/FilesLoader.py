@@ -9,9 +9,9 @@ class FileLoader:
 
     @staticmethod
     def readFiles(filesNames, encoding="utf-8"):
-        data = list()
+        data = dict()
         for filename in filesNames:
-            data.append((filename, FileLoader.readFile(filename, encoding)))
+            data[filename] = FileLoader.readFile(filename, encoding)
         return data
 
     @staticmethod
