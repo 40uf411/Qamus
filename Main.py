@@ -2,6 +2,7 @@ from Qamus.Core.FilesLoader import FileLoader
 from Qamus.Core.Tokenizer import Tokenizer
 from Qamus.Core.Indexer import Indexer
 from Qamus.Core.SearchEngine import SearchEngine
+from Qamus.Core.Evaluator import Evaluator
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Config %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 DOCS_DIR = '/media/zsasz/Ali1/study/2021/ri/tpri/docs/'
@@ -60,30 +61,28 @@ print()
 
 # ? testing the boolean request
 #result = SearchEngine.search('algebraic and set', model=SearchEngine.BOOLEAN_MODEL)
+ev = Loader.evaluation
+i = 10
+result = SearchEngine.search(
+    request=ev[i]['query']['W'], 
+    model=SearchEngine.VECTOR_MODEL, 
+    options = {
+        'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY, 
+        'dict': True, 
+        'minRel': 0.0001
+    })
 
-# result = SearchEngine.search(
-#     request='set of algorithms or logical normal tests', 
-#     model=SearchEngine.VECTOR_MODEL, 
-#     options = {
-#         'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY
-#     })
-# print(list(result.items())[:3])
+e = Loader.evaluationQueries(keys=['W'], seperat=True)
+
+Evaluator.init(
+    queries=e['queries'],
+    results=e['results'],
+    minRel=1e-3
+)
+print(list(result.items())[:3])
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)
-
-# execute a search query
-# searchResult = SearchEngine.Search(
-#     term='hommes',
-#     minOccurrences=2, 
-#     maxItems=2,
-#     showStat=True,
-#     includeIDF=INCLUDE_IDF, 
-#     methodIDF=IDF_METHOD
-#     )
-
-# wordIDF = SearchEngine.IDF(term='hommes', fraction=False)
-# print('Word IDF: ', wordIDF)
-
+print()
 # save index
 #SearchEngine.save('engineWithData.json', saveData=True)
 

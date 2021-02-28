@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
 import math
+from operator import itemgetter
+
 class VectorModule():
     INNER_PRODUCT_SIMILARITY = 0
     DICE_COEFFICIENT_SIMILARITY = 1
@@ -35,7 +37,20 @@ class VectorModule():
             result = VectorModule.cosinustSimilarity(request.tokens['frequency'], index)
         else:
             result = VectorModule.jaccardIndexSimilarity(request.tokens['frequency'], index)
-        return result
+            
+        result = sorted(result.items(), key=itemgetter(1), reverse=True)
+        if 'minRel' in options.keys():
+            tmp = list()
+            for elem in result:
+                if elem[1] >= options['minRel']:
+                    tmp.append(elem)
+                else:
+                    break;
+            result = tmp
+        if 'dict' in options.keys() and options['dict'] == True:
+            return dict(result)
+        else:
+            return result
 
     @staticmethod
     def innerProductSimilarity(query, index):

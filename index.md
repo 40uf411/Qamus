@@ -13,7 +13,7 @@ Features |   value
 Authors  | [Authors.md](https://github.com/40uf411/Qamus/master/AUTHORS.md)
 Release  | 0.1
 License  |[GMP](https://github.com/40uf411/Qamus/master/LICENSE)
-Tracker  |[40uf411/arrand/Issues](https://github.com/40uf411/Qamus/issues)
+Tracker  |[40uf411/Qamus/Issues](https://github.com/40uf411/Qamus/issues)
 Source  |[Github](http://github.com/40uf411/Qamus)
 Feedbacks  |[Comments](https://github.com/40uf411/Qamus/)
 Accounts  |[@Twitter](https://twitter.com/40uf411)
@@ -63,7 +63,7 @@ None, Nada, Rien...
 ### Import
 ```python
 >>> from Qamus.Core.SearchEngine import SearchEngine
->>> from Datasets.CACM.Api import Loader
+>>> from Qamus.Datasets.CACM.Api import Loader
 ```
 ### Load the corpus from the CACM dataset
 ```python
@@ -114,7 +114,7 @@ The CACM collection is a collection of titles and abstracts from the journal CAC
 The CACM collection comes with 3204 document written in English.
 To load and import data from CACM, you only have to import the `Loader` class.
 ```python
->>> from Datasets.CACM.Api import Loader
+>>> from Qamus.Datasets.CACM.Api import Loader
 >>> docs = Loader.loadData()
 ```
 Each document in the CACM collection has a list of attributes. Not all documents share the same set of attributes. Qamus has a built in function that allows the user to create a corpus of clean text from a list of CACM attributes.
@@ -131,7 +131,7 @@ Faranja is a collection of french 15 novels and documented from around 1830 to 2
 The Faranja collection was collected by [the developers of Qamus](github.com/40uf411) and it also comes with a list of french stopwords.
 Similar to CACM, importing Faranja is as easy as importing a class.
 ```python
->>> from Datasets.Faranja.Api import Loader
+>>> from Qamus.Datasets.Faranja.Api import Loader
 >>> docs = Loader.loadData()
 ```
 Since the collection of Faranja has no attributes the data obtained from the loaded dataset can be used as a corpus, and to avoid confusion, the `corpus` function can be used here as well to return Faranja corpus
