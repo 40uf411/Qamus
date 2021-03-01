@@ -79,6 +79,7 @@ Evaluator.init(
     results=e['results'],
     minRel=1e-3
 )
+e = Evaluator.accuracy(10)
 print(list(result.items())[:3])
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)
