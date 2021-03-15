@@ -7,7 +7,8 @@ class BooleanModule():
     def search(request, indexes):
         docs = list()
         for doc, index in indexes.items():
-            if eval(BooleanModule.encode(request, index)):
+            r = BooleanModule.encode(request, index)
+            if eval(r):
                 docs.append(doc)
         return docs
     

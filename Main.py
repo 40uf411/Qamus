@@ -62,16 +62,22 @@ print()
 # ? testing the boolean request
 #result = SearchEngine.search('algebraic and set', model=SearchEngine.BOOLEAN_MODEL)
 ev = Loader.evaluation
-i = 10
+# result = SearchEngine.search(
+#     request=ev[i]['query']['W'], 
+#     model=SearchEngine.VECTOR_MODEL, 
+#     options = {
+#         'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY, 
+#         'dict': True, 
+#         'minRel': 0.0001
+#     })
 result = SearchEngine.search(
-    request=ev[i]['query']['W'], 
+    request='( science or compiler ) and not algebra and code', 
     model=SearchEngine.VECTOR_MODEL, 
     options = {
         'similarityMethod': SearchEngine.JACCARD_INDEX_SIMILARITY, 
         'dict': True, 
         'minRel': 0.0001
     })
-
 e = Loader.evaluationQueries(keys=['W'], seperat=True)
 
 Evaluator.init(
@@ -79,7 +85,7 @@ Evaluator.init(
     results=e['results'],
     minRel=1e-3
 )
-e = Evaluator.accuracy(10)
+fs = Evaluator.accuracy()
 print(list(result.items())[:3])
 # load an existing model
 # SearchEngine.load(fileName='engineNoData.json', encoding=DOCS_ENCODING)

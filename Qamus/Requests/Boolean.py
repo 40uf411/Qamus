@@ -32,7 +32,7 @@ class BooleanRequest():
             if token in ['and', 'or'] and item in ['and', 'or']:
                 raise Exception('Syntax error, bad use of operators.')
             
-            if len(data) > 0 and token not in ['and', 'or', ')'] and item not in ['and', 'or', '(']:
+            if len(data) > 0 and token not in ['and', 'or', ')', 'not'] and item not in ['and', 'or', '(', 'not']:
                 data.append('and')
             
             if token == '(':
